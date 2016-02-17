@@ -1,0 +1,110 @@
+1. Introduction
+
+Sanitary sewer blockages (SSB) cause widespread negative impacts, including aesthetic degradation from odors, and
+property damage and environmental degradation from sanitary sewage overflow (SSO).
+In the U.S., where SSOs are tracked by the U.S. Environmental Protection Agency \citep{epa2004local}, approximately half of SSOs were caused by blockages, with up to 75% of SSOs caused by blockages in the arid Southwest \citep{epa2004report}.
+Consequently, prompt remediation of SSB is a high priority for municipalities, 
+and contributes to municipal sewer maintainence costs \citep{maintainence-cost}.
+
+Previous work has attributed SSBs primarily to roots, debris, and fats, oils, and grease (FOG) \citep{epa2004report}.
+In the U.S., 60-75% of blockages have fat, oil and grease (FOG) deposits as a contributory factor (Keener et al., 2008),
+while vegetation intrusion is the chief cause of blockages in Australia (Marlow et al., 2011).
+
+Climate can influence blockage rate by affecting both vegetation and water flow. Marlow et al. (2011), for example, showed a correlation between sewer blockage frequency and the Southern Oscillation Index (SOI) in eastern Australia. The SOI reflects rainfall patterns in the region, with droughts raising blockage risk by decreasing sewer flow volume and increasing sedimentation. Low rainfall also promotes tree root development, which damage pipes by intruding through joins and other weak points (DeSilva et al., 2011).
+
+FOG are widely recognized contributors to blockages.  FOG deposits form in a saponification reaction between calcium soaps and free fatty acids (He et al., 2011), chiefly from restaurants and industrial sources (Keener et al., 2008).  Free fatty acids are insoluble in water, and are transported in greasey effluent. 
+Many municipalities have implemented policies to minimize FOG inputs into sanitary sewers \citep{hassey2001grease, heckler2003best, parnell2005innovative, bennett2006atlanta, tupper2008fog}.  Residential outreach is often increased during the holiday season in an effort to minimize FOG inputs due to food preparation \citep{tupper2008fog}.
+
+Temperature is one potential driver of SSBs that has received little attention.  The viscosity of both water and FOGs decreases with decreasing temperature, which is expected to decreases fluid velocity and solid-carrying capacity due to increased losses of hydraulic head to friction. In addition, 
+FOG effluent solidifies at lower temperatures, causing overt blockages.
+
+In this study we examine five years of sewer blockage data from the City of Albuquerque municipal sewer system.  
+We explore the relationship between air temperature, sewage temperature, and the frequency of sewer temperature blockages.We find that air temperature is a useful proxy of sewage temparature, and that both air and sewage temperature predict sewage blockage. These relationships shed light on mechanisms of sewer blockage, and can potentially help municipalities
+anticipate time periods of elevated sewer blockages using readily available atmospheric data.
+
+2. Methods
+
+2.1 Data
+Sewer temperature grab samples were collected by AWUA personnel during routine maintenance, using XXX probes XXXX etc. 
+Sewage temperature measurements were available from 15 manholes, leading to 3 interceptors?? within Albuquerque.
+Data from the period December 2005 - December 2010 inclusive were available for this study.
+Daily mean temperature was obtained from the Albuquerque International airport's (KABQ) automated METAR data collection system (available from http://www.wunderground.com/history/airport/KABQ) for the full time period covering sewer blockage and temperature measurements (December 2005 - January 2013, inclusive).
+
+Albuquerque water authority respond to sewer blockages following discovery by maintenance workers or reports of substandard drain function from the public. This study used an anonymised dataset of blockage dates and engineers’ estimates of causes. Data from the period January 2009 - January 2013?? inclusive were available for this study.
+Since most days had no sewer blockages, the number of blockages per week per week was computed and used in subsequent analysis.
+
+2.2 Analysis
+All analysis was conducted with the R statistical programming environment \citep{cran}.
+The relationship between sewage grab sample temperature and daily average air temperature and was tested using a linear regression model. Air temperature, interceptor identity and manhole identity were tested as predictors of sewage temperature, and Bayes' information criterion (BIC) was used to select model structure.
+
+Blockage data were aggregated across all interceptors. 
+??xian -- why aggregated??
+The dependence of number of blockages per week on mean weekly sewer temperature and mean weekly air temperature was modeled using several generalized linear model (GLM) specifications.  The final model specification employed a negative binomial (response?? link??) GLM (??why - selection criteria??) (MASS version 7.3-33; Venables and Ripley 2002) .
+%% Blockage data followed an overdispersed what??, with forty-one weeks (23.8%) showing one or zero incidents. 
+??xian-- I don't follow the logic above...
+
+Weekly sewage temperature was calculated by simply taking the mean value of all measurements for all days and interceptors that week. (?? enough samples per week??)
+
+3. Results
+
+
+
+3.1 Air temperature and sewer temperature
+Candidate models were ranked using BIC (delta = 10; Table 2). The best model included air temperature, interceptor identity and an interaction between the two. This indicates that there was small but significant variation between interceptors’ and manholes’ responses to temperature. This model explained the majority of variation in sewage temperature (R2 = 0.78).
+
+Sewer temperature increases with air temperature (p < 0.001; Table 3), but scales sub-linearly: sewers remain above freezing when air temperature falls below 0C, but do not reach the same peaks as air temperature (Figure 2). 
+
+3.2 Sewage temperature and sewer blockages
+Sewers block more frequently at colder sewage temperatures (Figure 1). This relationship was highly statistically significant (p < 0.001; Table 1), and explained a lot of variation in sewer temperature.
+
+3.3 Air temperature and sewer blockages
+There were more blockages during colder weeks. Air temperature was a highly significant predictor of sewer blockage frequency (Table 4), but had limited explanatory power (9.3% deviance explained).
+
+When blockages were split by cause, blockages for which grease was recorded as a contributory factor were significantly associated with cold weather, whereas there was no relationship between temperature and other blockages (Figure 3; Table 5). The model predicting grease blockages explained 13% of deviance, compared with 2% for the model predicting other blockages.
+
+Sewers block more frequently at colder sewage temperatures. This relationship was highly statistically significant (p < 0.001; Table 1), and explained a lot of variation in sewer temperature.
+
+
+3.3 Air temperature and sewer blockages
+There were more blockages during colder weeks. Air temperature was a highly significant predictor of sewer blockage frequency, but explained a small amount of variation. 
+
+When blockages were split by cause, blockages for which grease was recorded as a contributory factor were significantly associated with cold weather, whereas there was no relationship between temperature and other blockages.
+
+4. Discussion
+
+Temperature data, which are widely and freely available, have modest utility in predicting sewer blockages over weekly timescales. These results suggest that areas experiencing increasing average temperatures may find that this trend alleviates the pressure placed on sewage systems by FOG deposits. Similarly, weather forecasts and real-time weather observations may prove useful for predicting and responding rapidly to blockages, reducing the threat to property and public health.
+
+Sewage data is a slightly more accurate predictor of blocking frequency. Where these data are regularly collected and rapidly analysed, they could be used in place of air temperature to anticipate problems in sanitation infrastructure. 
+
+The relationship between air and sewage temperature is likely to be mediated by ground temperature, and therefore by groundwater levels. The difference in predictive ability between sewage and air temperature may reflect the variable groundwater levels during the seasonal cycle in Albuquerque. Similarly, differences between interceptors and manholes may reflect elevation and land use, via their effects on groundwater temperature. Models including precipitation patterns and/or local physical characteristics (e.g. water table height, land use, soil type, geology) could test this hypothesis. 
+
+With continuing population rise and urbanisation, efficient operation of urban waste-water infrastructure is an increasingly important issue for global public health. Sato et al. (2013) recently highlighted the importance of more research into efficacy of waste-water treatment techniques, particularly in the developing world. The data in this study were not collected specially for research purposes. Rather, this study used data already collected by industry as part of standard operations, married with publicly accessible weather data available online. This demonstrates the potential usefulness of historic industry datasets for addressing future challenges. 
+
+
+References
+
+Desilva, D., Marlow, D., Beale, D., Marney, D., 2011. Sewer Blockage Management: Australian Perspective. J. Pipeline Syst. Eng. Pract. 2, 139–145. doi:10 .1061/(ASCE)PS.1949-1204.0000084
+
+He, X., Iasmin, M., Dean, L.O., Lappi, S.E., Ducoste, J.J., de los Reyes, F.L., 2011. Evidence for fat, oil, and grease (FOG) deposit formation mechanisms in sewer lines. Environ. Sci. Technol. 45, 4385–91. doi:10.1021/es2001997
+
+Keener, K.M., Ducoste, J.J., Holt, L.M., 2008. Properties Influencing Fat, Oil, and Grease Deposit Formation. Water Environ. Res. 80, 2241–2246. doi:10.2175/193864708X267441
+
+Marlow, D.R., Boulaire, F., Beale, D.J., Grundy, C., Moglia, M., 2011. Sewer Performance Reporting: Factors That Influence Blockages. J. Infrastruct. Syst. 17, 42–51. doi:10.1061/(ASCE)IS.1943-555X.0000041.
+
+R Core Team (2014). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL http://www.R-project.org/.
+
+Sato, T., Qadir, M., Yamamoto, S., Endo, T., Zahoor, A., 2013. Global, regional, and country level need for data on wastewater generation, treatment, and use. Agric. Water Manag. 130, 1–13. doi:10.1016/j.agwat.2013.08.007
+
+Venables, W. N. & Ripley, B. D. (2002) Modern Applied Statistics with S. Fourth Edition. Springer, New York. ISBN 0-387-95457-0
+
+--- List of Tables ---
+1. Details of blockages ~ sewer temperature model
+2. BIC ranking of candidate linear models
+3. Details of sewtemp ~ airtemp*interceptor model
+4. Details of all blockages ~ air temperature
+5. Details of blockages ~ air temp, broken down by cause (grease vs other)
+
+--- List of Figures ---
+1. blockages ~ sewer temperature
+2. sewer temp ~ air temp
+3. blockages ~ air temp, broken down by cause (grease vs other)

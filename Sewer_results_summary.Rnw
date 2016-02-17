@@ -1,0 +1,367 @@
+\documentclass[letterpaper,12pt]{article}
+
+%% on ubuntu requires texlive-latex-extra??
+%\usepackage[cm]{fullpage}
+
+% define the title, author, date
+\title{Grease blocks sewers more frequently in cold weather\\
+\large UNM~R~Programming~Group: Albuquerque~Sewer~Data~Project}
+\author{Josh Nightingale, Christian Gunning, Mark Holstad, \ldots}
+\date{\today}
+
+%% Latex packages
+\usepackage{hyperref}
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+# Code to set up knitr settings and libraries used every time
+# set global chunk options
+#opts_chunk$set(fig.align='center', concordance=TRUE, tidy=FALSE, include=T, message=F)
+options(replace.assign=TRUE, width=50, tidy=F)
+## Printing options default
+options(digits=3)
+print(pi)
+#set.seed(76543); # recompile will have same random numbers
+@
+
+% generates the title
+\maketitle
+
+% insert the table of contents
+\tableofcontents
+
+\clearpage
+
+\section{Daily mean air temperature predicts sewage temperature}
+
+<<libraries, include=F>>=
+require(lattice)
+require(plyr)
+require(reshape2)
+require(xts)
+require(xtable) # for tables
+require(weathermetrics) # for converting to SI units
+require(AER) # test for overdispersion
+require(ggplot2)
+require(gridExtra) # multifigure plots
+require(MASS) # for negbin models
+require(pscl) # for pR2 function
+@
+
+<<read_data, size='footnotesize', include=FALSE>>=
+source('run.weather.R')
+@
+
+See results in ManholeWeatherRegression.Rnw
+
+\section{Weekly mean air temperature predicts total number of sewer blockages that week}
+
+<<weeklm, fig.cap='Linear model diagnostic plots.', size='footnotesize', message=FALSE, warning=FALSE, error=FALSE, echo=FALSE, include=FALSE>>=
+## Just look at 10-40 (most of the data)
+## Overdispersed count data, use negative binomial
+sewer.nb <- glm.nb(N ~ Mean.TemperatureF, data=sewer.join)
+summary(sewer.nb) # very signiificant model
+
+## check assumptions by comparing to Poisson model
+# fit Poisson model
+sewer.ps <- glm(N ~ Mean.TemperatureF, data=sewer.join, family='poisson')
+summary(sewer.ps)
+# can compare with likelihood ratio test as Poisson model is nested in negbin
+lrtest(sewer.nb, sewer.ps) # negbin is a very significant improvement; 
+@
+
+The negative binomial GLM is highly significant (table \ref{tab:sewnb}):
+
+<<sewnb, results='asis', echo=FALSE>>=
+xtable(summary(sewer.nb), caption='Weekly mean air temperature predicts the number of blocked sewers that week', label='tab:sewnb')
+
+#proportion of deviance explained
+pr2 <- with(sewer.nb, (null.deviance-deviance)/null.deviance) 
+paste('Pseudo $R^2$ = ', signif(pr2, 2))  # 0.093 
+pR2(sewer.nb) # McFadden's pseudo R2 ~ variance explained
+@
+
+<<plotglm, size='footnotesize', echo=FALSE, fig.pos='h', fig.cap='Air temperature and total sewer blockages', fig.height=4>>=
+# calculate predicted values and confidence intervals
+sewblock <- cbind(sewer.join, predict(sewer.nb, type='link', se.fit=T))
+sewblock <- within(sewblock, {
+  phat <- exp(fit)
+  LL <- exp(fit - (1.96 * se.fit))
+  UL <- exp(fit + (1.96 * se.fit))
+})
+
+# plot
+p <- ggplot(sewblock, aes(x=Mean.TemperatureF))
+p <- p + geom_point(aes(y=N), shape=21)
+p <- p + geom_ribbon(aes(ymin=LL, ymax=UL), alpha=0.25)# confidence bounds
+p <- p + geom_line(aes(y=phat), colour='blue') + # fitted points
+  xlab('Mean weekly air temperature (°C)') + ylab('Number of incidents per week')
+p <- p + theme_classic() + 
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())
+print(p)
+@
+
+\clearpage
+
+\section{Temperature predicts only those blockages caused by grease}
+
+If we make a GLM of only those blockages caused by grease, and another for all other (i.e., non-grease) blockages, temperature is only a significant predictor of grease blockages.
+
+<<greasey, size='footnotesize', include=FALSE, message=FALSE, warning=FALSE, error=FALSE, echo=FALSE>>=
+## Number of problems for each code and week
+.grease <- subset(sewer, grepl('GR', CAUSE))
+head(.grease)
+sewer.fail.grease = ddply( .grease, c('year', 'week'),
+    function(x) { 
+      data.frame(N=nrow(x))  } 
+    ## show progress
+    #.progress='text'
+)
+head(sewer.fail.grease)
+
+sewer.join1 <- join(sewer.fail.grease, temp.week.df, type='full')
+head(sewer.join1, 3)
+
+## Weeks with no problems 
+sewer.join1$N[is.na(sewer.join1$N)] <- 0
+## Why are there remaining NAs in Mean.TemperatureF?
+sewer.join1 <- na.omit(sewer.join1)
+
+grease.nb <- glm.nb(N ~ Mean.TemperatureF, data=sewer.join1)
+summary(grease.nb)
+
+# pseudo R^2
+pr2.grease <- with(grease.nb, (null.deviance-deviance)/null.deviance) 
+paste('Pseudo $R^2$ = ', signif(pr2.grease, 2))
+
+## check assumptions by comparing to Poisson model
+# fit Poisson model
+grease.ps <- glm(N ~ Mean.TemperatureF, data=sewer.join1)
+summary(grease.ps)
+# can compare with likelihood ratio test as Poisson model is nested in negbin
+lrtest(grease.nb, grease.ps) # negbin is a very significant improvement; 
+@
+
+<<echo=FALSE, results='asis'>>=
+xtable(summary(grease.nb), caption='Negative binomial GLM predicting blockages caused by grease')
+paste('Pseudo $R^2$ = ', signif(pr2, 2))
+@
+
+<<greaseplot, include=FALSE>>=
+# calculate predicted values and confidence intervals
+greaseblock <- cbind(sewer.join1, predict(grease.nb, type='link', se.fit=T))
+greaseblock <- within(greaseblock, {
+  phat <- exp(fit)
+  LL <- exp(fit - (1.96 * se.fit))
+  UL <- exp(fit + (1.96 * se.fit))
+})
+
+# plot
+p <- ggplot(greaseblock, aes(x=Mean.TemperatureF))
+p <- p + geom_point(aes(y=N), shape=21)
+p <- p + geom_ribbon(aes(ymin=LL, ymax=UL), alpha=0.25)# confidence bounds
+p <- p + geom_line(aes(y=phat), colour='blue') + # fitted points
+  xlab('Mean weekly air temperature (°C)') + ylab('Number of grease-caused incidents per week')
+p <- p + theme_classic() + 
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())
+p <- p + annotate("text", x=-5.5, y=max(greaseblock$N)+1, label = 'A')
+p <- p + ylim(0, max(greaseblock$N)+1) # set both plots with equal y axes
+#print(p) 
+@
+
+<<notgreasey, size='footnotesize', echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, include=FALSE>>=
+## Number of problems for each code and week
+sewer$grease <- grepl('GR', sewer$CAUSE)
+#head(sewer$grease)
+
+# number of problems that weren't caused by grease
+notgrease <- subset(sewer, grease==F)
+sewer.fail.notgrease = ddply(notgrease, c('year', 'week'),
+    function(x) { 
+      data.frame(N=nrow(x))  } 
+    ## show progress
+    #.progress='text'
+)
+#head(sewer.fail.grease)
+
+sewer.join2 <- join(sewer.fail.notgrease, temp.week.df, type='full')
+#head(sewer.join2, 3)
+
+## Weeks with no problems 
+sewer.join2$N[is.na(sewer.join2$N)] <- 0
+## Why are there remaining NAs in Mean.TemperatureF?
+sewer.join2 <- na.omit(sewer.join2)
+
+notgrease.nb <- glm.nb(N ~ Mean.TemperatureF, data=sewer.join2)
+summary(notgrease.nb) # only just significant
+## Temperature does not significantly predict non-grease blockages!
+
+## check assumptions by comparing to Poisson model
+# fit Poisson model
+notgrease.ps <- glm(N ~ Mean.TemperatureF, data=sewer.join2, family='poisson')
+summary(notgrease.ps) # a bit significant
+# can compare with likelihood ratio test as Poisson model is nested in negbin
+lrtest(notgrease.nb, notgrease.ps) # negbin is still a very significant improvement;
+# ie neither model is much good
+AIC(notgrease.nb); AIC(notgrease.ps) # negbin far superior by AIC
+
+
+### plot
+
+# calculate predicted values and confidence intervals
+notgreaseblock <- cbind(sewer.join2, predict(notgrease.nb, type='link', se.fit=T))
+notgreaseblock <- within(notgreaseblock, {
+  phat <- exp(fit)
+  LL <- exp(fit - (1.96 * se.fit))
+  UL <- exp(fit + (1.96 * se.fit))
+})
+
+# make plot
+r <- ggplot(notgreaseblock, aes(x=Mean.TemperatureF))
+r <- r + geom_point(aes(y=N), shape=21)
+r <- r + geom_ribbon(aes(ymin=LL, ymax=UL), alpha=0.25)# confidence bounds
+r <- r + geom_line(aes(y=phat), colour='blue') + # fitted points
+  xlab('Mean weekly air temperature (°C)') + ylab('Weekly number of incidents not caused by grease')
+r <- r + theme_classic() + 
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())
+r <- r + ylim(0, max(greaseblock$N + 1)) # set both plots with equal y axes
+r <- r + annotate("text", x=-5.5, y=max(greaseblock$N)+1, label = 'B')
+#print(r)
+@
+
+<<echo=FALSE, results='asis'>>=
+xtable(summary(notgrease.nb), caption='Negative binomial GLM predicting blockages not caused by grease')
+
+pr2.notgrease<-with(notgrease.nb, (null.deviance-deviance)/null.deviance) 
+paste('Pseudo $R^2$ = ', signif(pr2.notgrease,2))
+@
+
+<<gridd, echo=FALSE, fig.pos='h', fig.width=10, fig.height=5, fig.cap='Temperature predicts blockages caused by grease (A) but not other blockages (B)', message=FALSE>>=
+grid.arrange(p, r, nrow=1)
+@
+
+\clearpage
+
+\section{Thanksgiving and Christmas}
+
+Can this pattern be explained by increased consumption of meat during Thanksgiving and Christmas?
+
+Christmas is always in week 52; during the study period, Thanksgiving was in week 48 in 2009, and week 47 in 2010-13.
+
+<<xmas, echo=FALSE, fig.pos='h', fig.width=10, fig.height=5, fig.cap='Temperature predicts blockages caused by grease (A) but not other blockages (B)', message=FALSE>>=
+# row numbers
+holiday.blocks <- c(sewer.fail.grease$N[
+  which(sewer.fail.grease$week == 51 | # xmas. no blockages in xmas 2012
+          sewer.fail.grease$week == 48 & sewer.fail.grease$year == 2009 | # thanksgiving 09
+          sewer.fail.grease$week == 47 & sewer.fail.grease$year >= 2010  ) # thanksgivings
+  ]
+  , 0 # because no problems in xmas 2012
+)
+
+# dataset without the holidays for independence
+not.on.holiday <- subset(
+  sewer.fail.grease,
+  week >= 44 # includes the other weeks from Nov and Dec only
+)$N[- # remove xmas and Tgiving weeks
+      which(sewer.fail.grease$week == 51 |
+              sewer.fail.grease$week == 48 & sewer.fail.grease$year == 2009 |
+              sewer.fail.grease$week == 47 & sewer.fail.grease$year >= 2010  )
+    ]
+
+
+wilcox.test(holiday.blocks, not.on.holiday) # nonsig
+
+## permutation test
+
+# define function
+bootstrap <- function(x, N = 1e4) {
+  n <- length(x)
+  bs.samp <- matrix(sample(x, size = N * n, replace = TRUE), ncol = N)
+  return(bs.samp)
+}
+
+# do bootstrapping
+bs.hols <- apply(bootstrap(holiday.blocks), 2, median) # median of each bs sample
+bs.nhol <- apply(bootstrap(not.on.holiday), 2, median)
+
+# combine for plotting; sort for fitting confidence intervals
+bs.hols.df <- data.frame(sort(bs.hols - bs.nhol)) # difference between bs samples
+names(bs.hols.df) <- 'diffs'
+
+# plot!
+p <- ggplot(bs.hols.df, aes(x=diffs))
+p <- p + geom_histogram(aes(y=..density..)
+                        , binwidth=1/2
+                        , colour="black", fill="gray58")
+#p <- p + geom_density(fill='gray85', alpha=0.4) # needs wider kernel than default
+# add mean of non-holiday weeks in red
+p <- p + geom_vline(aes(xintercept=0), colour="#BB0000", linetype="dashed")
+# add 95% CIs of holiday weeks in green
+p <- p + geom_vline(aes(xintercept=bs.hols.df$diffs[0.025*nrow(bs.hols.df)]), colour="#00AA00", linetype="longdash")
+p <- p + geom_vline(aes(xintercept=bs.hols.df$diffs[0.975*nrow(bs.hols.df)]), colour="#00AA00", linetype="longdash")
+p <- p + theme_classic() + theme(legend.position="none") + 
+  theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())
+p <- p + xlab('Number of blocks') + ylab('Density')
+print(p)
+@
+
+Without accounting for temperature, the weeks of Thanksgiving and Christmas did appear to have an exceptionally high number of blockages (lower CI $= 0$). 
+
+However, when including only November and December in the analysis, there appears to be no difference between holiday weeks and other weeks.
+
+\clearpage
+
+\section{Days with grease blockages are colder than those with other blockages}
+
+<<include=FALSE>>=
+sewer.weather$grease <- factor(grepl('GR', sewer.weather$CAUSE))
+summary(sewer.weather$grease)
+w.cause <- wilcox.test(sewer.weather$Mean.TemperatureF ~ sewer.weather$grease)
+w.cause # significantly different daily temperature on grease-blockage days:
+
+median(sewer.weather$Mean.TemperatureF[sewer.weather$grease==T])
+median(sewer.weather$Mean.TemperatureF[sewer.weather$grease==F])
+
+wilcox.test(sewer.weather$Mean.TemperatureF[sewer.weather$grease==T],
+            sewer.weather$Mean.TemperatureF[sewer.weather$grease==F])
+@
+
+The median temperature during days with grease blockages was $10\,^{\circ}\mathrm{C}$ whereas other blockages had an average of $13.9\,^{\circ}\mathrm{C}$.
+
+This difference was significantly different (Wilcoxon rank sum test: $W = \Sexpr{
+wilcox.test(sewer.weather$Mean.TemperatureF[sewer.weather$grease==T],
+            sewer.weather$Mean.TemperatureF[sewer.weather$grease==F])$statistic
+            }$, $p = \Sexpr{
+            wilcox.test(sewer.weather$Mean.TemperatureF[sewer.weather$grease==T],
+            sewer.weather$Mean.TemperatureF[sewer.weather$grease==F])$p.value
+            })$.
+
+\section{No difference in the diameter of pipes blocked by grease versus other blockages}
+
+<<pipe_diam, include=FALSE>>=
+w.diameter <- wilcox.test(sewer.weather$PIPE_DIAMETER ~ sewer.weather$grease)
+w.diameter
+
+median(sewer.weather$PIPE_DIAMETER[sewer.weather$grease==T], na.rm=T)
+median(sewer.weather$PIPE_DIAMETER[sewer.weather$grease==F], na.rm=T)
+## plot
+# pp <- ggplot(sewer.weather)
+# pp <- pp + geom_point(aes(x=grease, y=PIPE_DIAMETER), position=position_jitter(h=0), shape=21, alpha=0.5)
+# pp <- pp + geom_boxplot(aes(x=grease, y=Mean.TemperatureF), alpha=0.5)
+# print(pp)
+
+wilcox.test(sewer.weather$PIPE_DIAMETER[sewer.weather$grease==T],
+            sewer.weather$PIPE_DIAMETER[sewer.weather$grease==F])
+@
+
+Both samples had a median of 8 (units?) and did not significantly differ (Wilcoxon rank sum test: $W = \Sexpr{
+wilcox.test(sewer.weather$PIPE_DIAMETER[sewer.weather$grease==T],
+            sewer.weather$PIPE_DIAMETER[sewer.weather$grease==F])$statistic
+            }$, $p = \Sexpr{
+            wilcox.test(sewer.weather$PIPE_DIAMETER[sewer.weather$grease==T],
+            sewer.weather$PIPE_DIAMETER[sewer.weather$grease==F])$p.value
+            })$.
+
+\end{document}
+@
