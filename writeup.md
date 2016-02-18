@@ -7,7 +7,7 @@ output:
 ---
 # Temperature-dependence in sewer blockage frequency
 ### Josh Nightingale, Christian Gunning and Mark Holstad
-### Wed Feb 17 21:28:09 2016
+### Wed Feb 17 23:34:47 2016
 
 
 
@@ -32,6 +32,9 @@ In total, 1871 sanitary sewer temperature (ST) measurements from the period 2005
 to 2012-12-19 (inclusive) were used in this study.
 
 Mean daily air temperature (mAT/D) was obtained from the Albuquerque International airport's (KABQ) automated METAR data collection system (available from \url{http://www.wunderground.com/history/airport/KABQ}) spanning the entire period of study noted above.
+
+
+In addition, direct FOG measurements were available for 229 weeks. As with temperature measurements, these were averaged to calculate a mean weekly FOG level to use as a predictor of blockage frequency.
 
 Since most days had no SSB events, the total number of SSB 
 events per week (SSB/W) was computed and used in subsequent 
@@ -92,23 +95,37 @@ This dataset includes 884 total blockages where grease was the estimated blockag
 
 <figure><img src='figure/block.sewtemp-1.png'  style='display: block'><figcaption>Figure 3: Mean weekly sewer temperature predicts blockages caused by grease (D=0.257), and is a poor predictor of blockages due to other causes (D=0.080). Models include 90 weeks total. See Table ?? for model details.</figcaption></figure>
 
-Additional model validation was conducted by subdividing the
-period of record.  The response of weekly grease blockage 
+### The role of FOG
+
+Blockages were most frequent in weeks which had both high levels of FOG and low mean air temperatures (Figure \ref{fig:fogcont}). However, this model explained a similar amount of deviance (D = 0.186) to a model containing only temperature and blockage cause as predictors of blockages during the same weeks (D = 0.181). The addition of FOG to the model resulted in a change of only 1.4579133 AIC units, whereas an extra parameter should result in a decrease of at least 2 units to be considered an improvement \cite{Arnold2010}. Furthermore, FOG level was not a significant term in this model, nor in models predicting only grease-caused or other blockages (all p > 0.05).
+
+There was no significant seasonal trend in FOG levels, as shown by the non-significance of a quadratic model of the dependence of recorded FOG level on the day of year or that record. Similarly, there was no significant relationship with temperature.
+
+<figure><img src='figure/fogcont-1.png'  style='display: block'><figcaption>Figure 4: The highest number of blockages (shown by dark areas on the contour plot) occurs when levels of FOG are high, and air temperatures are low.</figcaption></figure>
+
+
+### Model validation
+
+Model validation was conducted by subdividing the
+period of record. We tested the model of grease blockage frequency's dependence on air temperature, as this had high predictive value while using a minimal amount of easily-obtained data.
+
+The response of weekly grease blockage 
 frequency to air temperature was fit using observations prior
 to 2012-04-12 (157 weeks).  The resulting model was 
 used to predict grease blockage frequency in the weeks after
 2012-04-12 (156 weeks).  The results, shown in Figure \ref{fig:validate}, indicate that model predictions generally capture the observed 
 pattern of grease blockage frequency.
 
+<figure><img src='figure/validate-1.png'  style='display: block'><figcaption>Figure 5: Model validation comparing predicted and observed weekly grease blockage frequency. To generate predictions, a model was fit using weeks prior to 2012-04-12 (157 weeks total).  Observed air temperatures in subsequent weeks (156 weeks total) were used to predict grease blockage frequency (X-axis). Also plotted are the observed grease blockage frequencies in those weeks (Y-axis). The dotted line is the identity line y = x, and the solid line shows the linear relationship between observed and predicted blockages (y = 0.58x -0.11).</figcaption></figure>
 
-<figure><img src='figure/validate-1.png'  style='display: block'><figcaption>Figure 4: Model validation comparing predicted and observed weekly grease blockage frequency. To generate predictions, a model was fit using weeks prior to 2012-04-12 (157 weeks total).  Observed air temperatures in subsequent weeks (156 weeks total) were used to predict grease blockage frequency (X-axis). Also plotted are the observed grease blockage frequencies in those weeks (Y-axis). The dotted line is the identity line y = x, and the solid line shows the linear relationship between observed and predicted blockages (y = 0.58x -0.11).</figcaption></figure>
+### Holiday FOG?
 
-Figure \ref{fig:tday} compares model residuals from the weeks containing and immediately after Thanksgiving with other weeks.  
+Using residuals from the model of blockage frequency by air temperature and cause,
+we tested the hypothesis that the holiday period causes extra blockages 
+via the addition of extra fats and grease to the drainage system.
+Figure \ref{fig:tday} compares model residuals from the weeks containing and immediately after Thanksgiving with other weeks, isolating any difference in blockage frequency during this period once temperature is taken into account.
 
-<figure><img src='figure/tday-1.png'  style='display: block'><figcaption>Figure 5: The highest number of blockages (shown by dark areas on the contour plot) occurs when levels of FOG are high, and air temperatures are low.</figcaption></figure>
-
-Adding FOG:
-<figure><img src='figure/fogcont-1.png'  style='display: block'><figcaption>Figure 6: Once air temperature is accounted for, the weeks containing and following Thanksgiving show no evidence of elevated frequencies of grease-caused blockages.</figcaption></figure>
+<figure><img src='figure/tday-1.png'  style='display: block'><figcaption>Figure 6: Once air temperature is accounted for, the weeks containing and following Thanksgiving show no evidence of elevated frequencies of grease-caused blockages.</figcaption></figure>
 
 # Discussion
 
@@ -196,7 +213,7 @@ in addressing modern (and future) urban infrastructure challenges.
 ??Need table numbers.
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Feb 17 21:31:14 2016 -->
+<!-- Wed Feb 17 23:37:39 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean sewage temperature and blockage cause predict weekly blockage frequency ( NB-GLM, n=90 weeks, D=0.281) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -209,7 +226,7 @@ in addressing modern (and future) urban infrastructure challenges.
 
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Feb 17 21:31:14 2016 -->
+<!-- Wed Feb 17 23:37:39 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean air temperature and blockage cause predicts weekly blockage frequency ( NB-GLM, n=313 weeks, D=0.183) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -234,7 +251,7 @@ in addressing modern (and future) urban infrastructure challenges.
 <figure><img src='figure/airtemp.ndays.mod-1.png'  style='display: block'><figcaption>Figure 10: Goodness-of-fit profile of linear model predicting sewer temperature from mean air temperature.  For a range of N, air temperature was averaged over the N days preceding each sewer temperature sample.  N = 40 yields the best model, with $R^2$ = 0.90. Note that results are not highly sensitive to N, with 30 < N < 50 all yielding good models.</figcaption></figure>
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Feb 17 21:31:17 2016 -->
+<!-- Wed Feb 17 23:37:43 2016 -->
 <table border=1>
 <caption align="bottom"> Summary table of the model of the response of mean weekly sewage grab sample temperature (MW-SGST) to mean weekly mean daily air temperature (MW-MDAT). Sewer interceptor identity has a significant effect on model intercept. $R^2 = 0.90$. </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
