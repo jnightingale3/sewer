@@ -7,7 +7,7 @@ output:
 ---
 # Temperature-dependence in sewer blockage frequency
 ### Josh Nightingale, Christian Gunning and Mark Holstad
-### Wed Mar  2 14:07:57 2016
+### Wed Mar  2 16:16:01 2016
 
 
 
@@ -16,6 +16,77 @@ output:
 
 
 
+
+# Introduction
+Sanitary sewer blockages (SSB) cause widespread negative impacts, including
+aesthetic degradation from odors, and property damage and environmental
+degradation from sanitary sewage overflow (SSO).  In the U.S., where SSOs are
+tracked by the Environmental Protection Agency \cite{epa2004local},
+approximately half of SSOs were caused by blockages, with up to 75\% of SSOs
+caused by blockages in the arid Southwest \cite{epa2004report}.
+Consequently, prompt remediation of SSB is a high priority for municipalities,
+and contributes to municipal sewer maintenance costs
+\cite{maintenance-cost}.
+
+Here we use an extensive dataset of SSB events in
+Albuquerque, New Mexico to demonstrate a significant association
+between blockage rate and air temperature.
+We find that air temperature is a very good predictor 
+of sewer temperature, and that
+temperature predominantly affects the 
+frequency of grease-caused blockages in this system.
+We discuss the physical and operational significance of 
+these findings.
+
+### Drivers of Blockage
+An extensive body of literature exists on sewer blockage 
+mechanism \citep{??}, physical structure \citep{??}, and 
+detection \citep{??}.  Surprisingly rare, however, are 
+large-scale 
+studies of the correlates and putative causes of elevated
+SSB rates. 
+
+Climate has been shown to influence SSB rates via affects on both vegetation and water
+flow. \cite{Marlow2011}, for example, showed a correlation between sewer
+blockage frequency and the Southern Oscillation Index (SOI) in eastern
+Australia. The SOI reflects rainfall patterns in the region, with droughts
+raising blockage risk by decreasing sewer flow volume and increasing
+sedimentation. Low rainfall also promotes tree root development, which damage
+pipes by intruding through joins and other weak points \cite{Desilva2011}.
+
+Previous work has attributed SSBs primarily to roots, debris, and fats, oils,
+and grease (FOG) \cite{epa2004report}.  In the U.S., 60-75\% of blockages
+have fat, oil and grease (FOG) deposits as a contributory factor
+\cite{Keener2008}, while vegetation intrusion is the chief cause of
+blockages in Australia \cite{Marlow2011}.
+
+As recognized contributors to SSB, FOG deposits have received considerable
+attention. FOG deposits form in a saponification reaction between calcium soaps
+and free fatty acids \cite{He2011}, chiefly from restaurants and
+industrial sources \cite{Keener2008}.  Free fatty acids are insoluble in
+water, and are transported in greasy effluent.  Many municipalities have
+implemented policies to minimize FOG inputs into sanitary sewers
+\cite{hassey2001grease, heckler2003best, parnell2005innovative,
+bennett2006atlanta, tupper2008fog}.  Residential outreach is often increased
+during the holiday season in an effort to minimize FOG inputs due to food
+preparation \cite{tupper2008fog}.
+
+### Influence of Temperature
+Temperature is one potential driver of SSB that has received little attention to
+date. The viscosity of both water and FOGs increases with decreasing
+temperature. For a given pipe network, increased viscosity results in increased
+frictional head loss \cite{romeo2002improved}. In addition, FOG effluent
+can solidify at lower temperatures, causing overt blockages.
+
+In this study we examine ?? years of SSB records from the City of Albuquerque
+municipal sewer system.  We find that air temperature is
+a useful proxy of sewage temperature, and that both air and sewage temperature
+predict SSB frequency. Specifically, temperature predicts SSB events for which
+FOGs are a contributory factor, suggesting that cold weather increases the impact of FOG deposits. SSBs with other causes do not respond to temperature. 
+
+These relationships shed light on mechanisms
+of sewer blockage, and can potentially help municipalities anticipate time
+periods of elevated sewer blockages using readily available climatic data.
 
 # Methods
 
@@ -25,7 +96,7 @@ The frequency of sanitary sewer blockages is the primary focus of this work.
 
 As part of an unrelated ABCWUA system odor control survey, sewage temperature was obtained via grab samples by 
 a chemical treatment vendor at 15 manholes on three treated north-south interceptors.  A map of these 
-three interceptor is shown in Figure S1. Temperature measurements were obtained, typically bi-weekly, using a 
+three interceptors is shown in Figure S1. Temperature measurements were obtained, typically bi-weekly, using a 
 Cooper Atkins DPP400W Waterproof Pen Style thermometer with an accuracy range of +/- 1 C° (from -10° to 100°C) 
 in a liquid sample collected from the manhole.  
 In total, 1871 sanitary sewer temperature (ST) measurements from the period 2005-10-04 
@@ -53,7 +124,18 @@ First, we seek to quantify the dependence of sewer temperature on air temperatur
 To account for the lag between air temperature and sewer temperature, we compute the moving average of air temperature 
 over a varying number of days N.  For each N, we fit a linear model (using a MANOVA model structure) that includes interceptor identity and N-day mean air temperature as predictors.  We then select N to maximize model $R^2$.
 
-Next, we seek to quantify the dependence of blockage frequency on temperature.  We model blockage frequency using the Negative Binomial Generalized Linear Model (NB-GLM)\cite{hilbe2014}.  We start by considering blockages of all causes, and model their dependence on either sewage temperature or air temperature.  Due to the sparcity of sewage temperature data, we then focus on air temperature, and model blockages by both cause and the N-day mean air temperature.  Finally, we conduct a detailed analysis of the dependence of grease-caused blockages on N-day mean air temperature.
+Next, we seek to quantify the dependence of blockage frequency on temperature.  We model blockage frequency using the Negative Binomial Generalized Linear Model (NB-GLM)\cite{hilbe2014}.  We start by considering blockages of all causes, and model their dependence on either sewage temperature or air temperature.  Due to the sparcity of sewage temperature data, we then focus on air temperature, and model blockages by both cause and the N-day mean air temperature. 
+
+Model validation was conducted by subdividing the period of record. We tested the model of grease blockage frequency's dependence on air temperature, as this had high predictive value while using a minimal amount of easily-obtained data. 
+We also test the hypothesis that the Thanksgiving period results in increased
+FOG by comparing the model residuals (number of excess blockages not explained
+by temperature alone) between weeks containing and immediately after 
+Thanksgiving with all other weeks during the study period.
+
+Finally, we conduct a detailed analysis of the dependence of grease-caused blockages on N-day mean air temperature. This analysis involved comparing
+the relative utility of temperature as a predictor of blockages with the
+use of direct measures of FOG levels, as well as testing the relationship
+between FOG measurements, seasonality and air temperature.
 
 Note that standard R^2 statistics are not available for GLMs.  However, the proportional reduction in deviance (D) provides an analogous measure of the model's explanatory power \cite{zheng2000summarizing}. Thus D falls between 0 and 1, and can be approximately interpreted as the proportion of variance explained by the model.
 
@@ -106,15 +188,13 @@ There was no significant seasonal trend in FOG levels, as shown by the non-signi
 
 ### Model validation
 
-Model validation was conducted by subdividing the
-period of record. We tested the model of grease blockage frequency's dependence on air temperature, as this had high predictive value while using a minimal amount of easily-obtained data.
-
 The response of weekly grease blockage 
 frequency to air temperature was fit using observations prior
 to 2012-04-12 (157 weeks).  The resulting model was 
 used to predict grease blockage frequency in the weeks after
-2012-04-12 (156 weeks).  The results, shown in Figure \ref{fig:validate}, indicate that model predictions generally capture the observed 
-pattern of grease blockage frequency.
+2012-04-12 (156 weeks).  The results, shown in Figure \ref{fig:validate}, indicate that model predictions generally capture the observed pattern of grease blockage frequency,
+though with a tendency to underestimate blockages during weeks
+with the highest frequencies.
 
 <figure><img src='figure/validate-1.png'  style='display: block'><figcaption>Figure 5: Model validation comparing predicted and observed weekly grease blockage frequency. To generate predictions, a model was fit using weeks prior to 2012-04-12 (157 weeks total).  Observed air temperatures in subsequent weeks (156 weeks total) were used to predict grease blockage frequency (X-axis). Also plotted are the observed grease blockage frequencies in those weeks (Y-axis). The dotted line is the identity line y = x, and the solid line shows the linear relationship between observed and predicted blockages (y = 0.58x -0.11).</figcaption></figure>
 
@@ -124,8 +204,9 @@ Using residuals from the model of blockage frequency by air temperature and caus
 we tested the hypothesis that the holiday period causes extra blockages 
 via the addition of extra fats and grease to the drainage system.
 Figure \ref{fig:tday} compares model residuals from the weeks containing and immediately after Thanksgiving with other weeks, isolating any difference in blockage frequency during this period once temperature is taken into account.
+No difference is observed between the holiday period and other times.
 
-<figure><img src='figure/tday-1.png'  style='display: block'><figcaption>Figure 6: Once air temperature is accounted for, the weeks containing and following Thanksgiving show no evidence of elevated frequencies of grease-caused blockages.</figcaption></figure>
+<figure><img src='figure/tday-1.png'  style='display: block'><figcaption>Figure 6: Once air temperature is accounted for, the weeks containing and following Thanksgiving show no evidence of elevated frequencies of grease-caused blockages. Points are horizontally jittered to avoid overlapping.</figcaption></figure>
 
 # Discussion
 
@@ -149,7 +230,7 @@ only modest utility in predicting sewer blockages over
 weekly timescales. Nonetheless, an increased 
 understand of the drivers of SSOs in general, 
 and FOG-related blockages in particular, 
-could aid in system design and maintainence.   
+could aid in system design and maintainence. 
 Consideration could be given in sewer design
 to select locations subject to higher winter temperatures,
 either through greater depth or under asphalt pavement.
@@ -177,7 +258,9 @@ use, possibly via their effects on groundwater temperature.
 Models including precipitation patterns and/or local
 physical characteristics (e.g. water table height, land use,
 sewer configuration, soil type, geology) could test this
-hypothesis. 
+hypothesis. The existence of within-system variation in 
+this study suggest that between-system variation may also
+be significant.
 
 Because lower air and soil temperatures occur 
 coincidental to the
@@ -185,9 +268,20 @@ Thanksgiving and Christmas season in the Northern
 Hemisphere, it is possible that FOG related SSOs increase
 during the holiday season but not due to higher levels of
 holiday generated FOG. 
-Indeed, we find no excess blockage frequency in Thanksgiving weeks.  Further study of SSO rates versus
-holiday seasons in Southern Hemisphere cities could further
+Indeed, we find no excess blockage frequency in Thanksgiving weeks.
+Further study of SSO rates versus
+holiday seasons in Southern Hemisphere cities could
 test this hypothesis.
+
+We also note that these results are from the U.S., where most systems, 
+including those in this study, are separate sewers.
+Furthermore, the prevalence of garbage disposal units, mechanical grinders
+which add greasy food waste directly into the sewer system, 
+have a higher prevalence in the U.S. than elsewhere. 
+These factors contribute to the importance of replicating
+this study in other regions where combined sewers are commoner,
+and garbage disposal units rarer, such as Europe. There may also be
+differences between old and new sewer systems.
 
 Our results also suggest that areas experiencing
 increasing average temperatures due to climate change may
@@ -207,13 +301,13 @@ were collected during routine system monitoring in the
 course of standard operations.  We hope this work 
 demonstrates the
 potential usefulness of historic datasets 
-in addressing modern (and future) urban infrastructure challenges.
+in addressing modern and future urban infrastructure challenges.
 
 # Tables
 ??Need table numbers.
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Mar  2 14:10:54 2016 -->
+<!-- Wed Mar  2 16:18:53 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean sewage temperature and blockage cause predict weekly blockage frequency ( NB-GLM, n=90 weeks, D=0.281) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -226,7 +320,7 @@ in addressing modern (and future) urban infrastructure challenges.
 
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Mar  2 14:10:54 2016 -->
+<!-- Wed Mar  2 16:18:53 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean air temperature and blockage cause predicts weekly blockage frequency ( NB-GLM, n=313 weeks, D=0.183) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -251,7 +345,7 @@ in addressing modern (and future) urban infrastructure challenges.
 <figure><img src='figure/airtemp.ndays.mod-1.png'  style='display: block'><figcaption>Figure 10: Goodness-of-fit profile of linear model predicting sewer temperature from mean air temperature.  For a range of N, air temperature was averaged over the N days preceding each sewer temperature sample.  N = 40 yields the best model, with $R^2$ = 0.90. Note that results are not highly sensitive to N, with 30 < N < 50 all yielding good models.</figcaption></figure>
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Mar  2 14:10:58 2016 -->
+<!-- Wed Mar  2 16:18:56 2016 -->
 <table border=1>
 <caption align="bottom"> Summary table of the model of the response of mean weekly sewage grab sample temperature (MW-SGST) to mean weekly mean daily air temperature (MW-MDAT). Sewer interceptor identity has a significant effect on model intercept. $R^2 = 0.90$. </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
