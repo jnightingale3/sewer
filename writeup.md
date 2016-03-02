@@ -7,7 +7,7 @@ output:
 ---
 # Temperature-dependence in sewer blockage frequency
 ### Josh Nightingale, Christian Gunning and Mark Holstad
-### Wed Feb 17 23:34:47 2016
+### Wed Mar  2 14:07:57 2016
 
 
 
@@ -213,7 +213,7 @@ in addressing modern (and future) urban infrastructure challenges.
 ??Need table numbers.
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Feb 17 23:37:39 2016 -->
+<!-- Wed Mar  2 14:10:54 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean sewage temperature and blockage cause predict weekly blockage frequency ( NB-GLM, n=90 weeks, D=0.281) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -226,7 +226,7 @@ in addressing modern (and future) urban infrastructure challenges.
 
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Feb 17 23:37:39 2016 -->
+<!-- Wed Mar  2 14:10:54 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean air temperature and blockage cause predicts weekly blockage frequency ( NB-GLM, n=313 weeks, D=0.183) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -251,7 +251,7 @@ in addressing modern (and future) urban infrastructure challenges.
 <figure><img src='figure/airtemp.ndays.mod-1.png'  style='display: block'><figcaption>Figure 10: Goodness-of-fit profile of linear model predicting sewer temperature from mean air temperature.  For a range of N, air temperature was averaged over the N days preceding each sewer temperature sample.  N = 40 yields the best model, with $R^2$ = 0.90. Note that results are not highly sensitive to N, with 30 < N < 50 all yielding good models.</figcaption></figure>
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Feb 17 23:37:43 2016 -->
+<!-- Wed Mar  2 14:10:58 2016 -->
 <table border=1>
 <caption align="bottom"> Summary table of the model of the response of mean weekly sewage grab sample temperature (MW-SGST) to mean weekly mean daily air temperature (MW-MDAT). Sewer interceptor identity has a significant effect on model intercept. $R^2 = 0.90$. </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>

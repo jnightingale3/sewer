@@ -169,12 +169,19 @@ block.airtemp.pred <- within(list(), {
   pred.lm <- lm(value~pred, data=pred)
 })
 
+
+########################################
+### FOG data
+########################################
+# sources another file which loads and cleans this data
+source('run.load_fog.R')
+
 ### pack FOG analysis in list as above
 block.foglevel.list <- within(list(), {
   dat <- baw.join
   mod.full <- glm.nb(value ~ MeanTempC + meanlfog + variable, data=dat)
   mod.nofog <- glm.nb(value ~ MeanTempC + variable, data=dat)
-  n.obs <- nobs(glm.full)
+  n.obs <- nobs(mod.full)
   aic.full <- AIC(mod.full)
   aic.nofog <- AIC(mod.nofog)
   dev.full <- mk.prop.dev(mod.full)

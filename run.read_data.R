@@ -194,10 +194,3 @@ sewer.block.week.melt <- melt(
 #if(!identical( index(.tmp.all), index(.tmp.cause))){
 #    stop('Indexes should be identical')
 #}
-
-
-########################################
-### FOG data
-########################################
-# sources another file which loads and cleans this data
-source('run.load_fog.R')

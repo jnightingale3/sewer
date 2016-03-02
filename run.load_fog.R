@@ -44,7 +44,7 @@ lm.fog.doy.3o <- lm(lfog ~ poly(doy, 3), data=allfog) # bad fit; 2nd & 3rd nonsi
 fogtemp <- join(allfog, weather, type='inner')
 
 # linear model
-lm.fog.temp <- lm(lfog ~ MeanTempC, data=fogtemp); summary(lm.temp.lfog) 
+#lm.fog.temp <- lm(lfog ~ MeanTempC, data=fogtemp); summary(lm.fog.temp) 
 # not sig at all, R^2 ~0
 
 #### Calculating weekly mean FOG reading
