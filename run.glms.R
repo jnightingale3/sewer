@@ -86,9 +86,9 @@ block.airtemp.list <- within(list(), {
   ## day of year
   tday$yday <- as.POSIXlt(tday$Date)$yday; 
   tday$resid = mod.grease$residuals; 
-  tday$Thanksgiving = FALSE; 
+  tday$Thanksgiving = 'Other'; 
   tday = within(tday, {
-    Thanksgiving[yday>=329 & yday <= 341] <- TRUE
+    Thanksgiving[yday>=329 & yday <= 341] <- 'Holiday'
   });
   tday.plot <- ggplot(tday, aes(y=resid, x=Thanksgiving)) +
     theme_bw() + 
@@ -194,5 +194,5 @@ block.foglevel.list <- within(list(), {
   plot <- levelplot(block ~ temp * fog, data=gridded.data, 
                     col.regions=grey.palette(100),
                     xlab='Mean Weekly Air Temperature (C)',
-                    ylab='Mean Weekl FOG Level (units?)')
+                    ylab='Mean Weekly FOG Level (units?)')
 })

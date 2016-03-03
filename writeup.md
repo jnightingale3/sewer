@@ -7,7 +7,7 @@ output:
 ---
 # Temperature-dependence in sewer blockage frequency
 ### Josh Nightingale, Christian Gunning and Mark Holstad
-### Wed Mar  2 16:16:01 2016
+### Thu Mar  3 09:52:57 2016
 
 
 
@@ -122,9 +122,9 @@ A time series of SSB events per week, for all causes and grease-related causes, 
 First, we seek to quantify the dependence of sewer temperature on air temperature using a set of linear models. Exploratory data analysis shows that manhole identity does not reliably covary with sewage temperature, while both interceptor identity and air temperature are significant predictors of sewage temperature.
 
 To account for the lag between air temperature and sewer temperature, we compute the moving average of air temperature 
-over a varying number of days N.  For each N, we fit a linear model (using a MANOVA model structure) that includes interceptor identity and N-day mean air temperature as predictors.  We then select N to maximize model $R^2$.
+over a varying number of preceding days N.  For each N, we fit a linear model (using a MANOVA model structure) that includes interceptor identity and N-day mean air temperature as predictors.  We then select N to maximize model $R^2$.
 
-Next, we seek to quantify the dependence of blockage frequency on temperature.  We model blockage frequency using the Negative Binomial Generalized Linear Model (NB-GLM)\cite{hilbe2014}.  We start by considering blockages of all causes, and model their dependence on either sewage temperature or air temperature.  Due to the sparcity of sewage temperature data, we then focus on air temperature, and model blockages by both cause and the N-day mean air temperature. 
+Next, we seek to quantify the dependence of blockage frequency on temperature.  We model blockage frequency using the Negative Binomial Generalized Linear Model (NB-GLM)\cite{hilbe2014}.  We start by considering blockages of all causes, and model their dependence on either sewage temperature or air temperature.  Due to the sparsity of sewage temperature data, we then focus on air temperature, and model blockages by both cause and the N-day mean air temperature. 
 
 Model validation was conducted by subdividing the period of record. We tested the model of grease blockage frequency's dependence on air temperature, as this had high predictive value while using a minimal amount of easily-obtained data. 
 We also test the hypothesis that the Thanksgiving period results in increased
@@ -152,7 +152,7 @@ Indeed, the final model of sewage temperature versus air temperature and interce
 
 We further analysed the effect of local 
 geography on linear model results.
-In all high-ranked linear models, interceptor identity exhibits a small but statistically significant effect of on sewage temperature, while manhole identity was not a significant predictor.
+In all high-ranked linear models, interceptor identity exhibits a small but statistically significant effect on sewage temperature, while manhole identity was not a significant predictor.
 Nonetheless, the effect size of either manhole and interceptor identity is small, and we do not consider local geographic effects further.
 
 ### Sewage temperature (mST/W), air temperature (mAT/W), and sewer blockage frequency (SSB/W)
@@ -181,7 +181,7 @@ This dataset includes 884 total blockages where grease was the estimated blockag
 
 Blockages were most frequent in weeks which had both high levels of FOG and low mean air temperatures (Figure \ref{fig:fogcont}). However, this model explained a similar amount of deviance (D = 0.186) to a model containing only temperature and blockage cause as predictors of blockages during the same weeks (D = 0.181). The addition of FOG to the model resulted in a change of only 1.4579133 AIC units, whereas an extra parameter should result in a decrease of at least 2 units to be considered an improvement \cite{Arnold2010}. Furthermore, FOG level was not a significant term in this model, nor in models predicting only grease-caused or other blockages (all p > 0.05).
 
-There was no significant seasonal trend in FOG levels, as shown by the non-significance of a quadratic model of the dependence of recorded FOG level on the day of year or that record. Similarly, there was no significant relationship with temperature.
+There was no significant seasonal trend in FOG levels, as shown by the non-significance of a quadratic model of the dependence of recorded FOG level on the day of year or that record. Similarly, there was no significant relationship with temperature (all p > 0.05).
 
 <figure><img src='figure/fogcont-1.png'  style='display: block'><figcaption>Figure 4: The highest number of blockages (shown by dark areas on the contour plot) occurs when levels of FOG are high, and air temperatures are low.</figcaption></figure>
 
@@ -307,7 +307,7 @@ in addressing modern and future urban infrastructure challenges.
 ??Need table numbers.
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Mar  2 16:18:53 2016 -->
+<!-- Thu Mar  3 09:55:57 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean sewage temperature and blockage cause predict weekly blockage frequency ( NB-GLM, n=90 weeks, D=0.281) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -320,7 +320,7 @@ in addressing modern and future urban infrastructure challenges.
 
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Mar  2 16:18:53 2016 -->
+<!-- Thu Mar  3 09:55:57 2016 -->
 <table border=1>
 <caption align="bottom"> Weekly mean air temperature and blockage cause predicts weekly blockage frequency ( NB-GLM, n=313 weeks, D=0.183) </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> z value </th> <th> Pr(&gt;|z|) </th>  </tr>
@@ -345,7 +345,7 @@ in addressing modern and future urban infrastructure challenges.
 <figure><img src='figure/airtemp.ndays.mod-1.png'  style='display: block'><figcaption>Figure 10: Goodness-of-fit profile of linear model predicting sewer temperature from mean air temperature.  For a range of N, air temperature was averaged over the N days preceding each sewer temperature sample.  N = 40 yields the best model, with $R^2$ = 0.90. Note that results are not highly sensitive to N, with 30 < N < 50 all yielding good models.</figcaption></figure>
 
 <!-- html table generated in R 3.2.3 by xtable 1.8-0 package -->
-<!-- Wed Mar  2 16:18:56 2016 -->
+<!-- Thu Mar  3 09:56:01 2016 -->
 <table border=1>
 <caption align="bottom"> Summary table of the model of the response of mean weekly sewage grab sample temperature (MW-SGST) to mean weekly mean daily air temperature (MW-MDAT). Sewer interceptor identity has a significant effect on model intercept. $R^2 = 0.90$. </caption>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>

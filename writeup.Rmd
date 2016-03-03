@@ -183,9 +183,9 @@ xyplot(block.plot.xts, type=c('h','g'), col='black', xlab='', ylab='SSB events p
 First, we seek to quantify the dependence of sewer temperature on air temperature using a set of linear models. Exploratory data analysis shows that manhole identity does not reliably covary with sewage temperature, while both interceptor identity and air temperature are significant predictors of sewage temperature.
 
 To account for the lag between air temperature and sewer temperature, we compute the moving average of air temperature 
-over a varying number of days N.  For each N, we fit a linear model (using a MANOVA model structure) that includes interceptor identity and N-day mean air temperature as predictors.  We then select N to maximize model $R^2$.
+over a varying number of preceding days N.  For each N, we fit a linear model (using a MANOVA model structure) that includes interceptor identity and N-day mean air temperature as predictors.  We then select N to maximize model $R^2$.
 
-Next, we seek to quantify the dependence of blockage frequency on temperature.  We model blockage frequency using the Negative Binomial Generalized Linear Model (NB-GLM)\cite{hilbe2014}.  We start by considering blockages of all causes, and model their dependence on either sewage temperature or air temperature.  Due to the sparcity of sewage temperature data, we then focus on air temperature, and model blockages by both cause and the N-day mean air temperature. 
+Next, we seek to quantify the dependence of blockage frequency on temperature.  We model blockage frequency using the Negative Binomial Generalized Linear Model (NB-GLM)\cite{hilbe2014}.  We start by considering blockages of all causes, and model their dependence on either sewage temperature or air temperature.  Due to the sparsity of sewage temperature data, we then focus on air temperature, and model blockages by both cause and the N-day mean air temperature. 
 
 Model validation was conducted by subdividing the period of record. We tested the model of grease blockage frequency's dependence on air temperature, as this had high predictive value while using a minimal amount of easily-obtained data. 
 We also test the hypothesis that the Thanksgiving period results in increased
@@ -213,7 +213,7 @@ Indeed, the final model of sewage temperature versus air temperature and interce
 
 We further analysed the effect of local 
 geography on linear model results.
-In all high-ranked linear models, interceptor identity exhibits a small but statistically significant effect of on sewage temperature, while manhole identity was not a significant predictor.
+In all high-ranked linear models, interceptor identity exhibits a small but statistically significant effect on sewage temperature, while manhole identity was not a significant predictor.
 Nonetheless, the effect size of either manhole and interceptor identity is small, and we do not consider local geographic effects further.
 
 ### Sewage temperature (mST/W), air temperature (mAT/W), and sewer blockage frequency (SSB/W)
@@ -244,7 +244,7 @@ plot(block.sewtemp.list$plot)
 
 Blockages were most frequent in weeks which had both high levels of FOG and low mean air temperatures (Figure \ref{fig:fogcont}). However, this model explained a similar amount of deviance (D = `r block.foglevel.list$dev.full`) to a model containing only temperature and blockage cause as predictors of blockages during the same weeks (D = `r block.foglevel.list$dev.nofog`). The addition of FOG to the model resulted in a change of only `r block.foglevel.list$aic.nofog - block.foglevel.list$aic.full` AIC units, whereas an extra parameter should result in a decrease of at least 2 units to be considered an improvement \cite{Arnold2010}. Furthermore, FOG level was not a significant term in this model, nor in models predicting only grease-caused or other blockages (all p > 0.05).
 
-There was no significant seasonal trend in FOG levels, as shown by the non-significance of a quadratic model of the dependence of recorded FOG level on the day of year or that record. Similarly, there was no significant relationship with temperature.
+There was no significant seasonal trend in FOG levels, as shown by the non-significance of a quadratic model of the dependence of recorded FOG level on the day of year or that record. Similarly, there was no significant relationship with temperature (all p > 0.05).
 
 ```{r fogcont, echo=FALSE, fig.pos='h', fig.width=4.5, fig.height=3.5, fig.cap=sprintf('The highest number of blockages (shown by dark areas on the contour plot) occurs when levels of FOG are high, and air temperatures are low.'), message=FALSE}
 plot(block.foglevel.list$plot)
